@@ -109,7 +109,7 @@
           
           <i class="fas fa-code" style="margin-top: -20px; zoom: 0.6;"></i>
           
-          <span>技术</span>
+          <span>technology</span>
         </a>
       </li>
       
@@ -118,7 +118,7 @@
           
           <i class="fas fa-sticky-note" style="margin-top: -20px; zoom: 0.6;"></i>
           
-          <span>生活</span>
+          <span>life</span>
         </a>
       </li>
       
@@ -238,7 +238,7 @@
 				  
 				   <i class="fa fas fa-code" style="position: absolute;left:50px" ></i>
 			      
-		          <span>技术</span>
+		          <span>technology</span>
                   </a>
                 </li>
               
@@ -248,7 +248,7 @@
 				  
 				   <i class="fa fas fa-sticky-note" style="position: absolute;left:50px" ></i>
 			      
-		          <span>生活</span>
+		          <span>life</span>
                   </a>
                 </li>
               
@@ -435,10 +435,52 @@
             </div>
             <div class="tag-chips">
                 
+                
+                <a href="/tags/%E9%9A%8F%E4%BE%BFheo/" title="随便heo: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="随便heo" style="background-color: #F9EBEA;">随便heo
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/explain/" title="explain: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="explain" style="background-color: #F5EEF8;">explain
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
             </div>
         </div>
     </div>
 </div>
+
+    
+    <link rel="stylesheet" type="text/css" href="/libs/jqcloud/jqcloud.css">
+<style type="text/css">
+    #tag-wordcloud {
+        width: 100%;
+        height: 300px;
+    }
+</style>
+
+<div class="container" data-aos="fade-up">
+    <div class="card">
+        <div id="tag-wordcloud" class="card-content"></div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/libs/jqcloud/jqcloud-1.0.4.min.js"></script>
+<script type="text/javascript">
+    
+
+    $('#tag-wordcloud').jQCloud([{"text":"随便heo","weight":1,"link":"/tags/随便heo/"},{"text":"explain","weight":1,"link":"/tags/explain/"}], {
+        autoResize: true
+    });
+</script>
 
     
 
