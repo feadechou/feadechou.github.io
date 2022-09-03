@@ -1,10 +1,10 @@
 <!DOCTYPE HTML>
-<html lang="zh-CN">
+<html lang="zh-HK">
 
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="分类, MyBlog">
+    <meta name="keywords" content="分類, MyBlog">
     <meta name="description" content="MyBlog">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -17,7 +17,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>分类 | MyBlog</title>
+    <title>分類 | MyBlog</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     
 
@@ -302,7 +302,7 @@
     <div class="card">
         <div class="card-content">
             <div class="tag-title center-align">
-                <i class="fas fa-bookmark"></i>&nbsp;&nbsp;文章分类
+                <i class="fas fa-bookmark"></i>&nbsp;&nbsp;文章分類
             </div>
             <div class="tag-chips">
                 
@@ -317,19 +317,19 @@
                 </a>
                 
                 
-                <a href="/categories/hexo%E5%8D%9A%E5%AE%A2/" title="hexo博客: 1">
+                <a href="/categories/vueblog/" title="vueblog: 1">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            style="background-color: #F5EEF8;">hexo博客
+                            style="background-color: #F5EEF8;">vueblog
                         <span class="tag-length">1</span>
                     </span>
                 </a>
                 
                 
-                <a href="/categories/vueblog/" title="vueblog: 1">
+                <a href="/categories/hexo%E5%8D%9A%E5%AE%A2/" title="hexo博客: 1">
                     <span class="chip center-align waves-effect waves-light
                              chip-default "
-                            style="background-color: #D5F5E3;">vueblog
+                            style="background-color: #D5F5E3;">hexo博客
                         <span class="tag-length">1</span>
                     </span>
                 </a>
@@ -364,7 +364,7 @@
     let option = {
         title: {
             left: 'center',
-            text: '文章分类雷达图',
+            text: '文章分類雷達圖',
             textStyle: {
                 fontWeight: 500,
                 fontSize: 22
@@ -377,7 +377,7 @@
                     color: '#3C4858'
                 }
             },
-            indicator: [{"name":"hexo博客常用","max":2},{"name":"hexo博客","max":2},{"name":"vueblog","max":2}],
+            indicator: [{"name":"hexo博客常用","max":2},{"name":"vueblog","max":2},{"name":"hexo博客","max":2}],
             nameGap: 5,
             center: ['50%','55%'],
             radius: '66%'
@@ -389,7 +389,7 @@
             data : [
                 {
                     value : [1,1,1],
-                    name : '文章分类数量'
+                    name : '文章分類數量'
                 }
             ]
         }]
@@ -470,8 +470,8 @@
             <a href="/about" target="_blank">feadechou</a>
             <br>
             
-                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">1k</span>
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站點總字數:&nbsp;<span
+                        class="white-color">4.3k</span>
             
 
             
@@ -480,13 +480,13 @@
             
             
                 <span id="busuanzi_container_site_pv">
-                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;總訪問量:&nbsp;
                     <span id="busuanzi_value_site_pv" class="white-color"></span>
             </span>
             
             
                 <span id="busuanzi_container_site_uv">
-                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;總訪問人數:&nbsp;
                     <span id="busuanzi_value_site_uv" class="white-color"></span>
             </span>
             
@@ -521,7 +521,7 @@
                         var diffYears = Math.floor(diff / years);
                         var diffDays = Math.floor((diff / days) - diffYears * 365);
                         // 区分是否有年份.
-                        var language = 'zh-CN';
+                        var language = 'zh-HK';
                         if (startYear === String(todayYear)) {
                             document.getElementById("year").innerHTML = todayYear;
                             var daysTip = 'This site has been running for ' + diffDays + ' days';
@@ -579,7 +579,7 @@
     <div class="modal-content">
         <div class="search-header">
             <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
-            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+            <input type="search" id="searchInput" name="s" placeholder="請輸入搜索的關鍵字"
                    class="search-input">
         </div>
         <div id="searchResult"></div>

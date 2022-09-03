@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="zh-CN">
+<html lang="zh-HK">
 
 
 <head>
@@ -318,14 +318,14 @@
 
 <div class="statis">
     <span class="count"><a href="/categories">3</a></span>
-    <span class="name">分类</span>
+    <span class="name">分類</span>
 </div>
 
 
 
 <div class="statis">
     <span class="count"><a href="/tags">2</a></span>
-    <span class="name">标签</span>
+    <span class="name">標籤</span>
 </div>
 
 
@@ -348,14 +348,14 @@
 
 <div class="statis">
     <span class="count"><a href="/categories">3</a></span>
-    <span class="name">分类</span>
+    <span class="name">分類</span>
 </div>
 
 
 
 <div class="statis">
     <span class="count"><a href="/tags">2</a></span>
-    <span class="name">标签</span>
+    <span class="name">標籤</span>
 </div>
 
 
@@ -428,7 +428,7 @@
 
 <div id="postCharts" class="post-charts">
     <div class="title center-align" data-aos="zoom-in-up">
-        <i class="far fa-bar-chart"></i>&nbsp;&nbsp;文章统计图
+        <i class="far fa-bar-chart"></i>&nbsp;&nbsp;文章統計圖
     </div>
     <div class="row">
         <div class="chart col s12 m6 l4" data-aos="zoom-in-up">
@@ -455,7 +455,7 @@
 
     let postsOption = {
         title: {
-            text: '文章发布统计图',
+            text: '文章發布統計圖',
             top: -5,
             x: 'center'
         },
@@ -471,7 +471,7 @@
         },
         series: [
             {
-                name: '文章篇数',
+                name: '文章篇數',
                 type: 'line',
                 color: ['#6772e5'],
                 data: [0,0,0,0,0,0,0,0,0,0,0,2,1],
@@ -502,7 +502,7 @@
 
     let categoriesOption = {
         title: {
-            text: '文章分类统计图',
+            text: '文章分類統計圖',
             top: -4,
             x: 'center'
         },
@@ -512,11 +512,11 @@
         },
         series: [
             {
-                name: '分类',
+                name: '分類',
                 type: 'pie',
                 radius: '50%',
                 color: ['#6772e5', '#ff9e0f', '#fa755a', '#3ecf8e', '#82d3f4', '#ab47bc', '#525f7f', '#f51c47', '#26A69A'],
-                data: [{"name":"hexo博客常用","value":1},{"name":"hexo博客","value":1},{"name":"vueblog","value":1}],
+                data: [{"name":"hexo博客常用","value":1},{"name":"vueblog","value":1},{"name":"hexo博客","value":1}],
                 itemStyle: {
                     emphasis: {
                         shadowBlur: 10,
@@ -532,7 +532,7 @@
 
     let tagsOption = {
         title: {
-            text: 'TOP10 标签统计图',
+            text: 'TOP10 標籤統計圖',
             top: -5,
             x: 'center'
         },
@@ -664,8 +664,8 @@
             <a href="/about" target="_blank">feadechou</a>
             <br>
             
-                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">1k</span>
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站點總字數:&nbsp;<span
+                        class="white-color">4.3k</span>
             
 
             
@@ -674,13 +674,13 @@
             
             
                 <span id="busuanzi_container_site_pv">
-                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;總訪問量:&nbsp;
                     <span id="busuanzi_value_site_pv" class="white-color"></span>
             </span>
             
             
                 <span id="busuanzi_container_site_uv">
-                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;總訪問人數:&nbsp;
                     <span id="busuanzi_value_site_uv" class="white-color"></span>
             </span>
             
@@ -715,7 +715,7 @@
                         var diffYears = Math.floor(diff / years);
                         var diffDays = Math.floor((diff / days) - diffYears * 365);
                         // 区分是否有年份.
-                        var language = 'zh-CN';
+                        var language = 'zh-HK';
                         if (startYear === String(todayYear)) {
                             document.getElementById("year").innerHTML = todayYear;
                             var daysTip = 'This site has been running for ' + diffDays + ' days';
@@ -773,7 +773,7 @@
     <div class="modal-content">
         <div class="search-header">
             <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
-            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+            <input type="search" id="searchInput" name="s" placeholder="請輸入搜索的關鍵字"
                    class="search-input">
         </div>
         <div id="searchResult"></div>
