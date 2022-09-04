@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="vueblog1.2, MyBlog">
-    <meta name="description" content="">
+    <meta name="description" content="整合shiro+jwt">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -284,6 +284,15 @@
                 </div>
                 <div class="col s5 right-align">
                     
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/vueblog/" class="post-category">
+                                vueblog
+                            </a>
+                        
+                    </div>
+                    
                 </div>
             </div>
 
@@ -298,14 +307,14 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2022-09-03
+                    2022-09-04
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    0
+                    213
                 </div>
                 
 
@@ -325,7 +334,27 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <p>整合shiro+jwt，主要还是希望用jwt作为用户权限进行身份验证<br>相当于现实网站中你可以上B站主页看视频，但涉及到收藏或者个人信息需要登陆的功能，jwt就相当于其中进入这些功能的钥匙，没有钥匙，你可以看一下门的外观或者按钮之类，相当于看网页外观或者不需要登陆的功能</p>
+<p>导包</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>dependency<span class="token operator">></span>
+    <span class="token operator">&lt;</span>groupId<span class="token operator">></span>org.crazycake<span class="token operator">&lt;</span>/groupId<span class="token operator">></span>
+    <span class="token operator">&lt;</span>artifactId<span class="token operator">></span>shiro-redis-spring-boot-starter<span class="token operator">&lt;</span>/artifactId<span class="token operator">></span>
+    <span class="token operator">&lt;</span>version<span class="token operator">></span><span class="token number">3.2</span>.<span class="token operator"><span class="token file-descriptor important">1</span>&lt;</span>/version<span class="token operator">></span>
+<span class="token operator">&lt;</span>/dependency<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">!</span>-- hutool工具类--<span class="token operator">></span>
+<span class="token operator">&lt;</span>dependency<span class="token operator">></span>
+    <span class="token operator">&lt;</span>groupId<span class="token operator">></span>cn.hutool<span class="token operator">&lt;</span>/groupId<span class="token operator">></span>
+    <span class="token operator">&lt;</span>artifactId<span class="token operator">></span>hutool-all<span class="token operator">&lt;</span>/artifactId<span class="token operator">></span>
+    <span class="token operator">&lt;</span>version<span class="token operator">></span><span class="token number">5.3</span>.<span class="token operator"><span class="token file-descriptor important">3</span>&lt;</span>/version<span class="token operator">></span>
+<span class="token operator">&lt;</span>/dependency<span class="token operator">></span>
+<span class="token operator">&lt;</span><span class="token operator">!</span>-- jwt --<span class="token operator">></span>
+<span class="token operator">&lt;</span>dependency<span class="token operator">></span>
+    <span class="token operator">&lt;</span>groupId<span class="token operator">></span>io.jsonwebtoken<span class="token operator">&lt;</span>/groupId<span class="token operator">></span>
+    <span class="token operator">&lt;</span>artifactId<span class="token operator">></span>jjwt<span class="token operator">&lt;</span>/artifactId<span class="token operator">></span>
+    <span class="token operator">&lt;</span>version<span class="token operator">></span><span class="token number">0.9</span>.<span class="token operator"><span class="token file-descriptor important">1</span>&lt;</span>/version<span class="token operator">></span>
+<span class="token operator">&lt;</span>/dependency<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>官方文档：<a target="_blank" rel="noopener" href="https://github.com/alexxiyang/shiro-redis/blob/master/docs/README.md#spring-boot-starter">https://github.com/alexxiyang/shiro-redis/blob/master/docs/README.md#spring-boot-starter</a></p>
+
                 
             </div>
             <hr/>
@@ -449,7 +478,7 @@
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            整合shiro+jwt
                         
                     </div>
                     <div class="publish-info">
@@ -458,8 +487,12 @@
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            feadechou
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/vueblog/" class="post-category">
+                                    vueblog
+                                </a>
+                            
                             
                         </span>
                     </div>
@@ -697,7 +730,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">4.5k</span>
+                        class="white-color">4.7k</span>
             
 
             
