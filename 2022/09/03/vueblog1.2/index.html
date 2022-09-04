@@ -314,7 +314,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    213
+                    1.9k
                 </div>
                 
 
@@ -335,8 +335,7 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <p>整合shiro+jwt，主要还是希望用jwt作为用户权限进行身份验证<br>相当于现实网站中你可以上B站主页看视频，但涉及到收藏或者个人信息需要登陆的功能，jwt就相当于其中进入这些功能的钥匙，没有钥匙，你可以看一下门的外观或者按钮之类，相当于看网页外观或者不需要登陆的功能</p>
-<p>导包</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>dependency<span class="token operator">></span>
+<h1 id="导包"><a href="#导包" class="headerlink" title="导包"></a>导包</h1><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>dependency<span class="token operator">></span>
     <span class="token operator">&lt;</span>groupId<span class="token operator">></span>org.crazycake<span class="token operator">&lt;</span>/groupId<span class="token operator">></span>
     <span class="token operator">&lt;</span>artifactId<span class="token operator">></span>shiro-redis-spring-boot-starter<span class="token operator">&lt;</span>/artifactId<span class="token operator">></span>
     <span class="token operator">&lt;</span>version<span class="token operator">></span><span class="token number">3.2</span>.<span class="token operator"><span class="token file-descriptor important">1</span>&lt;</span>/version<span class="token operator">></span>
@@ -354,6 +353,390 @@
     <span class="token operator">&lt;</span>version<span class="token operator">></span><span class="token number">0.9</span>.<span class="token operator"><span class="token file-descriptor important">1</span>&lt;</span>/version<span class="token operator">></span>
 <span class="token operator">&lt;</span>/dependency<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>官方文档：<a target="_blank" rel="noopener" href="https://github.com/alexxiyang/shiro-redis/blob/master/docs/README.md#spring-boot-starter">https://github.com/alexxiyang/shiro-redis/blob/master/docs/README.md#spring-boot-starter</a></p>
+<p>对了，把redis下了，因为这个包整合了redis</p>
+<h1 id="重写shiroconfig"><a href="#重写shiroconfig" class="headerlink" title="重写shiroconfig"></a>重写shiroconfig</h1><p>· 包名.config.ShiroConfig</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">package com.markerhub.vueblog.config<span class="token punctuation">;</span>
+//记得改包名
+
+<span class="token function">import</span> com.markerhub.vueblog.shiro.AccountRealm<span class="token punctuation">;</span>
+<span class="token function">import</span> com.markerhub.vueblog.shiro.JwtFilter<span class="token punctuation">;</span>
+<span class="token function">import</span> org.apache.shiro.mgt.SecurityManager<span class="token punctuation">;</span>
+<span class="token function">import</span> org.apache.shiro.mgt.SessionsSecurityManager<span class="token punctuation">;</span>
+<span class="token function">import</span> org.apache.shiro.session.mgt.SessionManager<span class="token punctuation">;</span>
+<span class="token function">import</span> org.apache.shiro.spring.web.ShiroFilterFactoryBean<span class="token punctuation">;</span>
+
+<span class="token function">import</span> org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition<span class="token punctuation">;</span>
+<span class="token function">import</span> org.apache.shiro.spring.web.config.ShiroFilterChainDefinition<span class="token punctuation">;</span>
+<span class="token function">import</span> org.apache.shiro.web.mgt.DefaultWebSecurityManager<span class="token punctuation">;</span>
+
+<span class="token function">import</span> org.apache.shiro.web.session.mgt.DefaultWebSessionManager<span class="token punctuation">;</span>
+<span class="token function">import</span> org.crazycake.shiro.RedisCacheManager<span class="token punctuation">;</span>
+<span class="token function">import</span> org.crazycake.shiro.RedisSessionDAO<span class="token punctuation">;</span>
+<span class="token function">import</span> org.springframework.beans.factory.annotation.Autowired<span class="token punctuation">;</span>
+<span class="token function">import</span> org.springframework.context.annotation.Bean<span class="token punctuation">;</span>
+<span class="token function">import</span> org.springframework.context.annotation.Configuration<span class="token punctuation">;</span>
+
+<span class="token function">import</span> javax.servlet.Filter<span class="token punctuation">;</span>
+<span class="token function">import</span> java.util.HashMap<span class="token punctuation">;</span>
+<span class="token function">import</span> java.util.LinkedHashMap<span class="token punctuation">;</span>
+<span class="token function">import</span> java.util.Map<span class="token punctuation">;</span>
+
+
+@Configuration
+public class ShiroConfig <span class="token punctuation">&#123;</span>
+
+    @Autowired
+    RedisSessionDAO redisSessionDAO<span class="token punctuation">;</span>
+
+    @Autowired
+    RedisCacheManager redisCacheManager<span class="token punctuation">;</span>
+
+    @Autowired
+    JwtFilter jwtFilter<span class="token punctuation">;</span>
+
+    //Shiro-redis
+    @Bean
+    public SessionManager <span class="token function-name function">sessionManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        DefaultWebSessionManager sessionManager <span class="token operator">=</span> new DefaultWebSessionManager<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        // inject redisSessionDAO
+        sessionManager.setSessionDAO<span class="token punctuation">(</span>redisSessionDAO<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        // other stuff<span class="token punctuation">..</span>.
+
+        <span class="token builtin class-name">return</span> sessionManager<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>//shiro的权限数据和会话信息能保存在redis
+
+    @Bean
+    public SessionsSecurityManager securityManager<span class="token punctuation">(</span>AccountRealm accountRealm,
+                                                   SessionManager sessionManager<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        DefaultWebSecurityManager securityManager <span class="token operator">=</span> new DefaultWebSecurityManager<span class="token punctuation">(</span>accountRealm<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        //inject sessionManager
+        securityManager.setSessionManager<span class="token punctuation">(</span>sessionManager<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        // inject redisCacheManager
+        securityManager.setCacheManager<span class="token punctuation">(</span>redisCacheManager<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        // other stuff<span class="token punctuation">..</span>.
+
+        <span class="token builtin class-name">return</span> securityManager<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    @Bean
+    public ShiroFilterChainDefinition <span class="token function-name function">shiroFilterChainDefinition</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        DefaultShiroFilterChainDefinition chainDefinition <span class="token operator">=</span> new DefaultShiroFilterChainDefinition<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Map<span class="token operator">&lt;</span>String, String<span class="token operator">></span> filterMap <span class="token operator">=</span> new LinkedHashMap<span class="token operator">&lt;></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        filterMap.put<span class="token punctuation">(</span><span class="token string">"/**"</span>, <span class="token string">"jwt"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> // 主要通过注解方式校验权限,所有链接都需要经过这个过滤器
+        chainDefinition.addPathDefinitions<span class="token punctuation">(</span>filterMap<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin class-name">return</span> chainDefinition<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>//哪些链接需要经过哪些过滤器
+
+    @Bean<span class="token punctuation">(</span><span class="token string">"shiroFilterFactoryBean"</span><span class="token punctuation">)</span>
+    public ShiroFilterFactoryBean shiroFilterFactoryBean<span class="token punctuation">(</span>SecurityManager securityManager,
+                                                         ShiroFilterChainDefinition shiroFilterChainDefinition<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        ShiroFilterFactoryBean shiroFilter <span class="token operator">=</span> new ShiroFilterFactoryBean<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        shiroFilter.setSecurityManager<span class="token punctuation">(</span>securityManager<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        Map<span class="token operator">&lt;</span>String, Filter<span class="token operator">></span> filters <span class="token operator">=</span> new HashMap<span class="token operator">&lt;></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        filters.put<span class="token punctuation">(</span><span class="token string">"jwt"</span>, jwtFilter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        shiroFilter.setFilters<span class="token punctuation">(</span>filters<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        Map<span class="token operator">&lt;</span>String, String<span class="token operator">></span> filterMap <span class="token operator">=</span> shiroFilterChainDefinition.getFilterChainMap<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        shiroFilter.setFilterChainDefinitionMap<span class="token punctuation">(</span>filterMap<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin class-name">return</span> shiroFilter<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="新建一个realm"><a href="#新建一个realm" class="headerlink" title="新建一个realm"></a>新建一个realm</h1><p>重写三个方法<br>· supports：为了让realm支持jwt的凭证校验<br>· doGetAuthorizationInfo：权限校验<br>· doGetAuthenticationInfo：登录认证校验</p>
+<p>· 包名.shiro.AccountRealm</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">package com.markerhub.vueblog.shiro<span class="token punctuation">;</span>
+
+<span class="token function">import</span> com.markerhub.vueblog.entity.User<span class="token punctuation">;</span>
+<span class="token function">import</span> com.markerhub.vueblog.service.UserService<span class="token punctuation">;</span>
+<span class="token function">import</span> com.markerhub.vueblog.util.JwtUtils<span class="token punctuation">;</span>
+<span class="token function">import</span> org.apache.shiro.authc.*<span class="token punctuation">;</span>
+<span class="token function">import</span> org.apache.shiro.authz.AuthorizationInfo<span class="token punctuation">;</span>
+<span class="token function">import</span> org.apache.shiro.realm.AuthorizingRealm<span class="token punctuation">;</span>
+<span class="token function">import</span> org.apache.shiro.subject.PrincipalCollection<span class="token punctuation">;</span>
+<span class="token function">import</span> org.springframework.beans.BeanUtils<span class="token punctuation">;</span>
+<span class="token function">import</span> org.springframework.beans.factory.annotation.Autowired<span class="token punctuation">;</span>
+<span class="token function">import</span> org.springframework.stereotype.Component<span class="token punctuation">;</span>
+
+
+///安全数据，例如权限、用户、角色等
+@Component
+public class AccountRealm extends AuthorizingRealm <span class="token punctuation">&#123;</span>
+
+    @Autowired
+    JwtUtils jwtUtils<span class="token punctuation">;</span>
+
+    @Autowired
+    UserService userService<span class="token punctuation">;</span>
+
+    /*
+    使其能识别自定义token
+     */
+    @Override
+    public boolean supports<span class="token punctuation">(</span>AuthenticationToken token<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin class-name">return</span> token instanceof JwtToken<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    @Override
+    protected AuthorizationInfo doGetAuthorizationInfo<span class="token punctuation">(</span>PrincipalCollection principalCollection<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+
+
+        <span class="token builtin class-name">return</span> null<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>//获取权限，返回给Shiro
+
+    @Override
+    protected AuthenticationInfo doGetAuthenticationInfo<span class="token punctuation">(</span>AuthenticationToken authenticationToken<span class="token punctuation">)</span> throws AuthenticationException <span class="token punctuation">&#123;</span>
+
+        JwtToken jwtToken <span class="token operator">=</span> <span class="token punctuation">(</span>JwtToken<span class="token punctuation">)</span> authenticationToken<span class="token punctuation">;</span>
+
+        String userId <span class="token operator">=</span> jwtUtils.getClaimByToken<span class="token variable"><span class="token punctuation">((</span>String<span class="token punctuation">)</span> jwtToken.getPrincipal<span class="token punctuation">(</span><span class="token punctuation">))</span></span>.getSubject<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        User user <span class="token operator">=</span> userService.getById<span class="token punctuation">(</span>Long.valueOf<span class="token punctuation">(</span>userId<span class="token punctuation">))</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>user <span class="token operator">==</span> null<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+            throw new UnknownAccountException<span class="token punctuation">(</span><span class="token string">"账户不存在"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>user.getStatus<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> -1<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+            throw new LockedAccountException<span class="token punctuation">(</span><span class="token string">"账户被锁定"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>//被锁定
+
+        AccountProfile accountProfile <span class="token operator">=</span> new AccountProfile<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        BeanUtils.copyProperties<span class="token punctuation">(</span>user,accountProfile<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        System.out.println<span class="token punctuation">(</span><span class="token string">"-------------------"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin class-name">return</span> new SimpleAuthenticationInfo<span class="token punctuation">(</span>accountProfile,jwtToken.getCredentials<span class="token punctuation">(</span><span class="token punctuation">)</span>,getName<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">;</span>//实现登陆信息认证
+    <span class="token punctuation">&#125;</span>//密码校验，认证
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="自定义JwtToken"><a href="#自定义JwtToken" class="headerlink" title="自定义JwtToken"></a>自定义JwtToken</h1><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">package com.markerhub.vueblog.shiro<span class="token punctuation">;</span>
+
+<span class="token function">import</span> org.apache.shiro.authc.AuthenticationToken<span class="token punctuation">;</span>
+/*
+shiro默认supports的是UsernamePasswordToken，
+而现在采用了jwt的方式，所以这里自定义一个JwtToken，来完成shiro的supports方法。
+ */
+public class JwtToken implements AuthenticationToken <span class="token punctuation">&#123;</span>
+
+    private String token<span class="token punctuation">;</span>
+
+    public JwtToken<span class="token punctuation">(</span>String jwt<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        this.token <span class="token operator">=</span> jwt<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    /*
+     * 返回身份信息，相当于用户的用户名
+     */
+    @Override
+    public Object <span class="token function-name function">getPrincipal</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin class-name">return</span> token<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    /*
+     * 返回用户凭证信息，相当于用户的用户密码
+     */
+    @Override
+    public Object <span class="token function-name function">getCredentials</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin class-name">return</span> token<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="JwtUtil工具类"><a href="#JwtUtil工具类" class="headerlink" title="JwtUtil工具类"></a>JwtUtil工具类</h1><p>wtUtils是个生成和校验jwt的工具类，其中有些jwt相关的密钥信息是从项目配置文件中配置的。<br>· 包名.shiro.AccountProfile</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">package com.markerhub.vueblog.util<span class="token punctuation">;</span>
+
+<span class="token function">import</span> io.jsonwebtoken.Claims<span class="token punctuation">;</span>
+<span class="token function">import</span> io.jsonwebtoken.Jwts<span class="token punctuation">;</span>
+<span class="token function">import</span> io.jsonwebtoken.SignatureAlgorithm<span class="token punctuation">;</span>
+<span class="token function">import</span> lombok.Data<span class="token punctuation">;</span>
+<span class="token function">import</span> lombok.extern.slf4j.Slf4j<span class="token punctuation">;</span>
+<span class="token function">import</span> org.springframework.boot.context.properties.ConfigurationProperties<span class="token punctuation">;</span>
+<span class="token function">import</span> org.springframework.stereotype.Component<span class="token punctuation">;</span>
+
+<span class="token function">import</span> java.util.Date<span class="token punctuation">;</span>
+
+@Slf4j
+@Data
+@Component
+@ConfigurationProperties<span class="token punctuation">(</span>prefix <span class="token operator">=</span> <span class="token string">"markerhub.jwt"</span><span class="token punctuation">)</span>//稍后配置会写
+public class JwtUtils <span class="token punctuation">&#123;</span>
+    private String secret<span class="token punctuation">;</span>
+    private long expire<span class="token punctuation">;</span>
+    private String header<span class="token punctuation">;</span>
+    /**
+     * 生成jwt token
+     */
+    public String generateToken<span class="token punctuation">(</span>long userId<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        Date nowDate <span class="token operator">=</span> new Date<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        //过期时间
+        Date expireDate <span class="token operator">=</span> new Date<span class="token punctuation">(</span>nowDate.getTime<span class="token punctuation">(</span><span class="token punctuation">)</span> + expire * <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token builtin class-name">return</span> Jwts.builder<span class="token punctuation">(</span><span class="token punctuation">)</span>
+                .setHeaderParam<span class="token punctuation">(</span><span class="token string">"typ"</span>, <span class="token string">"JWT"</span><span class="token punctuation">)</span>
+                .setSubject<span class="token punctuation">(</span>userId+<span class="token string">""</span><span class="token punctuation">)</span>
+                .setIssuedAt<span class="token punctuation">(</span>nowDate<span class="token punctuation">)</span>
+                .setExpiration<span class="token punctuation">(</span>expireDate<span class="token punctuation">)</span>
+                .signWith<span class="token punctuation">(</span>SignatureAlgorithm.HS512, secret<span class="token punctuation">)</span>
+                .compact<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    // 获取jwt的信息
+    public Claims getClaimByToken<span class="token punctuation">(</span>String token<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        try <span class="token punctuation">&#123;</span>
+            <span class="token builtin class-name">return</span> Jwts.parser<span class="token punctuation">(</span><span class="token punctuation">)</span>
+                    .setSigningKey<span class="token punctuation">(</span>secret<span class="token punctuation">)</span>
+                    .parseClaimsJws<span class="token punctuation">(</span>token<span class="token punctuation">)</span>
+                    .getBody<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>catch <span class="token punctuation">(</span>Exception e<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+            log.debug<span class="token punctuation">(</span><span class="token string">"validate is token error "</span>, e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token builtin class-name">return</span> null<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+
+    /**
+     * token是否过期
+     * @return  true：过期
+     */
+    public boolean isTokenExpired<span class="token punctuation">(</span>Date expiration<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin class-name">return</span> expiration.before<span class="token punctuation">(</span>new Date<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="AccountProfile"><a href="#AccountProfile" class="headerlink" title="AccountProfile"></a>AccountProfile</h1><p>· 包名.shiro.AccountProfile</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">@Data
+public class AccountProfile implements Serializable <span class="token punctuation">&#123;</span>
+
+    private Long <span class="token function">id</span><span class="token punctuation">;</span>
+
+    private String username<span class="token punctuation">;</span>
+
+    private String avatar<span class="token punctuation">;</span>
+
+    private String email<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><p>· application.yml(之前已经改了)</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">shiro-redis:
+  enable: <span class="token boolean">true</span>
+  redis-manager:
+    host:127.0.0.1:6379
+
+<span class="token comment"># 对应Jwt工具类</span>
+markerhub:
+  jwt:
+    <span class="token comment"># 加密密钥</span>
+    secret: f4e2e52034348f86b67cde581c0f9eb5
+    <span class="token comment"># token 有效时长，7天，单位：秒</span>
+    expire: <span class="token number">604800</span>
+    header: Authorization<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>新建一个配置文件<br>· 包名&#x2F;resources&#x2F;META-INF&#x2F;spring-devtools.properties</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">restart.include.shiro-redis<span class="token operator">=</span>/shiro-<span class="token punctuation">[</span><span class="token punctuation">\</span><span class="token punctuation">\</span>w-<span class="token punctuation">\</span><span class="token punctuation">\</span>.<span class="token punctuation">]</span>+jar<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h1 id="JwtFilter"><a href="#JwtFilter" class="headerlink" title="JwtFilter"></a>JwtFilter</h1><p>这个过滤器是所有链接都需要经过，ShiroConfig有写到，用来校验权限<br>继承的是Shiro内置的AuthenticatingFilter,方法是重写过的<br>1、createToken：生成自定义JwtToken<br>2、onAccessDenied：拦截校验，当头部没有Authorization时候，我们直接通过，不需要自动登录；当带有的时候，首先我们校验jwt的有效性，没问题我们就直接执行executeLogin方法实现自动登录<br>3、onLoginFailure：登录异常时进入，直接将异常信息封装后抛出<br>4、preHandle：拦截器的前置拦截，因为是前后端分析项目，项目中除了需要跨域全局配置之外，我们再拦截器中也需要提供跨域支持。这样，拦截器才不会在进入Controller之前就被限制了。</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">import</span> cn.hutool.json.JSONUtil<span class="token punctuation">;</span>
+<span class="token function">import</span> com.baomidou.mybatisplus.core.toolkit.StringUtils<span class="token punctuation">;</span>
+<span class="token function">import</span> com.markerhub.vueblog.common.lang.Result<span class="token punctuation">;</span>
+<span class="token function">import</span> com.markerhub.vueblog.util.JwtUtils<span class="token punctuation">;</span>
+<span class="token function">import</span> io.jsonwebtoken.Claims<span class="token punctuation">;</span>
+<span class="token function">import</span> org.apache.shiro.authc.AuthenticationException<span class="token punctuation">;</span>
+<span class="token function">import</span> org.apache.shiro.authc.AuthenticationToken<span class="token punctuation">;</span>
+<span class="token function">import</span> org.apache.shiro.authc.ExpiredCredentialsException<span class="token punctuation">;</span>
+<span class="token function">import</span> org.apache.shiro.web.filter.authc.AuthenticatingFilter<span class="token punctuation">;</span>
+<span class="token function">import</span> org.apache.shiro.web.util.WebUtils<span class="token punctuation">;</span>
+<span class="token function">import</span> org.springframework.beans.factory.annotation.Autowired<span class="token punctuation">;</span>
+<span class="token function">import</span> org.springframework.stereotype.Component<span class="token punctuation">;</span>
+<span class="token function">import</span> org.springframework.web.bind.annotation.RequestMethod<span class="token punctuation">;</span>
+
+<span class="token function">import</span> javax.servlet.ServletRequest<span class="token punctuation">;</span>
+<span class="token function">import</span> javax.servlet.ServletResponse<span class="token punctuation">;</span>
+<span class="token function">import</span> javax.servlet.http.HttpServletRequest<span class="token punctuation">;</span>
+<span class="token function">import</span> javax.servlet.http.HttpServletResponse<span class="token punctuation">;</span>
+<span class="token function">import</span> java.io.IOException<span class="token punctuation">;</span>
+
+@Component
+public class JwtFilter extends AuthenticatingFilter <span class="token punctuation">&#123;</span>
+
+    @Autowired
+    JwtUtils jwtUtils<span class="token punctuation">;</span>
+
+    @Override
+    protected AuthenticationToken createToken<span class="token punctuation">(</span>ServletRequest servletRequest, ServletResponse servletResponse<span class="token punctuation">)</span> throws Exception <span class="token punctuation">&#123;</span>
+        //获取token
+        HttpServletRequest request <span class="token operator">=</span> <span class="token punctuation">(</span>HttpServletRequest<span class="token punctuation">)</span> servletRequest<span class="token punctuation">;</span>
+        String jwt <span class="token operator">=</span> request.getHeader<span class="token punctuation">(</span><span class="token string">"Authorization"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        if<span class="token punctuation">(</span>StringUtils.isEmpty<span class="token punctuation">(</span>jwt<span class="token punctuation">))</span><span class="token punctuation">&#123;</span>
+            <span class="token builtin class-name">return</span> null<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token builtin class-name">return</span> new JwtToken<span class="token punctuation">(</span>jwt<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    //对token进行判断
+    @Override
+    protected boolean onAccessDenied<span class="token punctuation">(</span>ServletRequest servletRequest, ServletResponse servletResponse<span class="token punctuation">)</span> throws Exception <span class="token punctuation">&#123;</span>
+        //获取token
+        HttpServletRequest request <span class="token operator">=</span> <span class="token punctuation">(</span>HttpServletRequest<span class="token punctuation">)</span> servletRequest<span class="token punctuation">;</span>
+        String jwt <span class="token operator">=</span> request.getHeader<span class="token punctuation">(</span><span class="token string">"Authorization"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        if<span class="token punctuation">(</span>StringUtils.isEmpty<span class="token punctuation">(</span>jwt<span class="token punctuation">))</span><span class="token punctuation">&#123;</span>
+            <span class="token builtin class-name">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>else<span class="token punctuation">&#123;</span>
+            //校验jwt
+            Claims claim <span class="token operator">=</span> jwtUtils.getClaimByToken<span class="token punctuation">(</span>jwt<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            if<span class="token punctuation">(</span>claim <span class="token operator">==</span> null <span class="token operator">||</span> jwtUtils.isTokenExpired<span class="token punctuation">(</span>claim.getExpiration<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                throw new ExpiredCredentialsException<span class="token punctuation">(</span><span class="token string">"token已失效，请重新登陆"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+            //授权登录
+            <span class="token builtin class-name">return</span> executeLogin<span class="token punctuation">(</span>servletRequest, servletResponse<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+    <span class="token punctuation">&#125;</span>
+
+    @Override
+    protected boolean onLoginFailure<span class="token punctuation">(</span>AuthenticationToken token, AuthenticationException e, ServletRequest request, ServletResponse response<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+
+        HttpServletResponse httpServletResponse <span class="token operator">=</span> <span class="token punctuation">(</span>HttpServletResponse<span class="token punctuation">)</span> response<span class="token punctuation">;</span>
+
+        Throwable throwable <span class="token operator">=</span> e.getCause<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> null ? e <span class="token builtin class-name">:</span> e.getCause<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>//获取错误原因
+        Result result <span class="token operator">=</span> Result.fail<span class="token punctuation">(</span>throwable.getMessage<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
+        String json <span class="token operator">=</span> JSONUtil.toJsonStr<span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        try <span class="token punctuation">&#123;</span>
+            httpServletResponse.getWriter<span class="token punctuation">(</span><span class="token punctuation">)</span>.print<span class="token punctuation">(</span>json<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span> catch <span class="token punctuation">(</span>IOException ex<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+
+        <span class="token punctuation">&#125;</span>
+
+
+        <span class="token builtin class-name">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    //进过滤器之前，进行的跨域问题
+    @Override
+    protected boolean preHandle<span class="token punctuation">(</span>ServletRequest request, ServletResponse response<span class="token punctuation">)</span> throws Exception <span class="token punctuation">&#123;</span>
+
+        HttpServletRequest httpServletRequest <span class="token operator">=</span> WebUtils.toHttp<span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        HttpServletResponse httpServletResponse <span class="token operator">=</span> WebUtils.toHttp<span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        httpServletResponse.setHeader<span class="token punctuation">(</span><span class="token string">"Access-control-Allow-Origin"</span>, httpServletRequest.getHeader<span class="token punctuation">(</span><span class="token string">"Origin"</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
+        httpServletResponse.setHeader<span class="token punctuation">(</span><span class="token string">"Access-Control-Allow-Methods"</span>, <span class="token string">"GET,POST,OPTIONS,PUT,DELETE"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        httpServletResponse.setHeader<span class="token punctuation">(</span><span class="token string">"Access-Control-Allow-Headers"</span>, httpServletRequest.getHeader<span class="token punctuation">(</span><span class="token string">"Access-Control-Request-Headers"</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
+        // 跨域时会首先发送一个OPTIONS请求，这里我们给OPTIONS请求直接返回正常状态
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>httpServletRequest.getMethod<span class="token punctuation">(</span><span class="token punctuation">)</span>.equals<span class="token punctuation">(</span>RequestMethod.OPTIONS.name<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            httpServletResponse.setStatus<span class="token punctuation">(</span>org.springframework.http.HttpStatus.OK.value<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
+            <span class="token builtin class-name">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token builtin class-name">return</span> super.preHandle<span class="token punctuation">(</span>request, response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>到这里基本搞定。</p>
 
                 
             </div>
@@ -461,30 +844,29 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/09/03/vueblog1.2/">
+                <a href="/2022/09/04/vueblog1.3/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/6.png" class="responsive-img" alt="vueblog1.2">
+                        <img src="/medias/featureimages/7.png" class="responsive-img" alt="vueblog1.3">
                         
-                        <span class="card-title">vueblog1.2</span>
+                        <span class="card-title">vueblog1.3</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            整合shiro+jwt
+                            异常处理
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-09-03
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-09-04
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-bookmark fa-fw icon-category"></i>
@@ -497,7 +879,6 @@
                         </span>
                     </div>
                 </div>
-
                 
             </div>
         </div>
@@ -730,7 +1111,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">4.7k</span>
+                        class="white-color">7.5k</span>
             
 
             
