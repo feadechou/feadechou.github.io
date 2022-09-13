@@ -50,7 +50,9 @@
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
 
 
 <body>
@@ -314,7 +316,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    232
+                    224
                 </div>
                 
 
@@ -341,7 +343,7 @@
 @EqualsAndHashCode<span class="token punctuation">(</span>callSuper <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
 @Accessors<span class="token punctuation">(</span>chain <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
 @TableName<span class="token punctuation">(</span><span class="token string">"m_user"</span><span class="token punctuation">)</span>
-public class User implements Serializable <span class="token punctuation">&#123;</span>
+public class User implements Serializable <span class="token punctuation">{</span>
 
     private static final long serialVersionUID <span class="token operator">=</span> 1L<span class="token punctuation">;</span>
 
@@ -365,7 +367,7 @@ public class User implements Serializable <span class="token punctuation">&#123;
 
     private LocalDateTime lastLogin<span class="token punctuation">;</span>
     
-<span class="token punctuation">&#125;</span>
+<span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><p>在UserController写测试方法，用postman测试接口，body-raw-json，用json方法体</p>
@@ -375,16 +377,16 @@ public class User implements Serializable <span class="token punctuation">&#123;
  * @return
  */
 @PostMapping<span class="token punctuation">(</span><span class="token string">"/save"</span><span class="token punctuation">)</span>
-public Object testUser<span class="token punctuation">(</span>@Validated @RequestBody User user<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+public Object testUser<span class="token punctuation">(</span>@Validated @RequestBody User user<span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token builtin class-name">return</span> user.toString<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">&#125;</span>
+<span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h1 id="跨域问题"><a href="#跨域问题" class="headerlink" title="跨域问题"></a>跨域问题</h1><p>·包名.config.CorsConfig</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">@Configuration
-public class CorsConfig implements WebMvcConfigurer <span class="token punctuation">&#123;</span>
+public class CorsConfig implements WebMvcConfigurer <span class="token punctuation">{</span>
     @Override
-    public void addCorsMappings<span class="token punctuation">(</span>CorsRegistry registry<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    public void addCorsMappings<span class="token punctuation">(</span>CorsRegistry registry<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         registry.addMapping<span class="token punctuation">(</span><span class="token string">"/**"</span><span class="token punctuation">)</span>
                 /*
                 .allowedOrigins<span class="token punctuation">(</span><span class="token string">"*"</span><span class="token punctuation">)</span>
@@ -395,8 +397,8 @@ public class CorsConfig implements WebMvcConfigurer <span class="token punctuati
                 .allowCredentials<span class="token punctuation">(</span>true<span class="token punctuation">)</span>
                 .maxAge<span class="token punctuation">(</span><span class="token number">3600</span><span class="token punctuation">)</span>
                 .allowedHeaders<span class="token punctuation">(</span><span class="token string">"*"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
                 

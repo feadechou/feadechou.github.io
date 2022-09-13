@@ -50,7 +50,9 @@
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
 
 
 <body>
@@ -314,7 +316,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    259
+                    246
                 </div>
                 
 
@@ -336,52 +338,52 @@
             <div id="articleContent">
                 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">@RestController
 @RequestMapping<span class="token punctuation">(</span><span class="token string">"/blog"</span><span class="token punctuation">)</span>
-public class BlogController <span class="token punctuation">&#123;</span>
+public class BlogController <span class="token punctuation">{</span>
 
     @Autowired
     BlogService blogService<span class="token punctuation">;</span>
 
     @GetMapping<span class="token punctuation">(</span><span class="token string">"/blogs"</span><span class="token punctuation">)</span>
-    public Result list<span class="token punctuation">(</span>@RequestParam<span class="token punctuation">(</span>defaultValue <span class="token operator">=</span> <span class="token string">"1"</span><span class="token punctuation">)</span> Integer currentPage<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    public Result list<span class="token punctuation">(</span>@RequestParam<span class="token punctuation">(</span>defaultValue <span class="token operator">=</span> <span class="token string">"1"</span><span class="token punctuation">)</span> Integer currentPage<span class="token punctuation">)</span><span class="token punctuation">{</span>
 
         Page page <span class="token operator">=</span> new Page<span class="token punctuation">(</span>currentPage,5<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        IPage pageData <span class="token operator">=</span> blogService.page<span class="token punctuation">(</span>page,new QueryWrapper<span class="token operator">&lt;</span>Blog<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span>.orderByDesc<span class="token punctuation">(</span><span class="token string">"created"</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
+        IPage pageData <span class="token operator">=</span> blogService.page<span class="token punctuation">(</span>page,new QueryWrapper<span class="token operator">&lt;</span>Blog<span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>.orderByDesc<span class="token punctuation">(</span><span class="token string">"created"</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
 
         <span class="token builtin class-name">return</span> Result.succ<span class="token punctuation">(</span>pageData<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">}</span>
 
-    @GetMapping<span class="token punctuation">(</span><span class="token string">"/blogs/&#123;id&#125;"</span><span class="token punctuation">)</span>
-    public Result detail<span class="token punctuation">(</span>@PathVariable<span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"id"</span><span class="token punctuation">)</span> Long <span class="token function">id</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    @GetMapping<span class="token punctuation">(</span><span class="token string">"/blogs/{id}"</span><span class="token punctuation">)</span>
+    public Result detail<span class="token punctuation">(</span>@PathVariable<span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"id"</span><span class="token punctuation">)</span> Long <span class="token function">id</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
         Blog blog <span class="token operator">=</span> blogService.getById<span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
         Assert.notNull<span class="token punctuation">(</span>blog,<span class="token string">"该博客已被删除"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
         <span class="token builtin class-name">return</span> Result.succ<span class="token punctuation">(</span>blog<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">}</span>
 
     @RequiresAuthentication
     @PostMapping<span class="token punctuation">(</span><span class="token string">"/blogs/edit"</span><span class="token punctuation">)</span>
-    public Result edit<span class="token punctuation">(</span>@Validated @RequestBody Blog blog<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    public Result edit<span class="token punctuation">(</span>@Validated @RequestBody Blog blog<span class="token punctuation">)</span><span class="token punctuation">{</span>
 
         Blog temp <span class="token operator">=</span> null<span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>blog.getId<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>blog.getId<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span><span class="token punctuation">{</span>
             temp <span class="token operator">=</span> blogService.getById<span class="token punctuation">(</span>blog.getId<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
             //只能编辑自己的文章
             Assert.isTrue<span class="token punctuation">(</span>temp.getUserId<span class="token punctuation">(</span><span class="token punctuation">)</span> .equals<span class="token punctuation">(</span>ShiroUtil.getProfile<span class="token punctuation">(</span><span class="token punctuation">)</span>.getId<span class="token punctuation">(</span><span class="token punctuation">))</span> ,<span class="token string">"没有权限编辑"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             //Assert.isTrue<span class="token punctuation">(</span>temp.getUserId<span class="token punctuation">(</span><span class="token punctuation">)</span>.longValue<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> ShiroUtil.getProfile<span class="token punctuation">(</span><span class="token punctuation">)</span>.getId<span class="token punctuation">(</span><span class="token punctuation">)</span>.longValue<span class="token punctuation">(</span><span class="token punctuation">)</span>, <span class="token string">"没有权限编辑"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             System.out.println<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">&#125;</span>else<span class="token punctuation">&#123;</span>
+        <span class="token punctuation">}</span>else<span class="token punctuation">{</span>
             temp <span class="token operator">=</span> new Blog<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             temp.setUserId<span class="token punctuation">(</span>ShiroUtil.getProfile<span class="token punctuation">(</span><span class="token punctuation">)</span>.getId<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
             temp.setCreated<span class="token punctuation">(</span>LocalDateTime.now<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
             temp.setStatus<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">}</span>
 
         BeanUtil.copyProperties<span class="token punctuation">(</span>blog,temp,<span class="token string">"id"</span>,<span class="token string">"userId"</span>,<span class="token string">"created"</span>,<span class="token string">"status"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         blogService.saveOrUpdate<span class="token punctuation">(</span>temp<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token builtin class-name">return</span> Result.succ<span class="token punctuation">(</span>null<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">}</span>
 
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>这里有一点注意，用psotman测试时，博客接口是需要登录才能用，所以登录测试后，去请求头复制Autoritation的内容，在新的测试中，请求头加上Autoritation和它的内容（键值对），并勾上，一般登上要把cookie全清了才算退出登陆。</p>
 

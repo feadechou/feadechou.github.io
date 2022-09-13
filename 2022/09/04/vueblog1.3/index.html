@@ -50,7 +50,9 @@
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
 
 
 <body>
@@ -314,7 +316,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    330
+                    311
                 </div>
                 
 
@@ -334,7 +336,7 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>通过使用@ControllerAdvice来进行统一异常处理，@ExceptionHandler(value &#x3D; RuntimeException.class)来指定捕获的Exception各个类型异常 ，这个异常的处理，是全局的，所有类似的异常，都会跑到这个地方处理。</p>
+                <p>通过使用@ControllerAdvice来进行统一异常处理，@ExceptionHandler(value = RuntimeException.class)来指定捕获的Exception各个类型异常 ，这个异常的处理，是全局的，所有类似的异常，都会跑到这个地方处理。</p>
 <p>@ControllerAdvice表示定义全局控制器异常处理<br>@ExceptionHandler表示针对性异常处理，可对每种异常针对性处理</p>
 <p>· 包名.common.exception.GlobalExceptionHandler</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">import</span> com.markerhub.vueblog.common.lang.Result<span class="token punctuation">;</span>
@@ -350,40 +352,40 @@
 
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler <span class="token punctuation">&#123;</span>
+public class GlobalExceptionHandler <span class="token punctuation">{</span>
 
     @ResponseStatus<span class="token punctuation">(</span>HttpStatus.UNAUTHORIZED<span class="token punctuation">)</span>
     @ExceptionHandler<span class="token punctuation">(</span>value <span class="token operator">=</span> ShiroException.class<span class="token punctuation">)</span>
-    public Result handler<span class="token punctuation">(</span>ShiroException e<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-        log.error<span class="token punctuation">(</span><span class="token string">"运行时异常：----------&#123;&#125;"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public Result handler<span class="token punctuation">(</span>ShiroException e<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        log.error<span class="token punctuation">(</span><span class="token string">"运行时异常：----------{}"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token builtin class-name">return</span> Result.fail<span class="token punctuation">(</span><span class="token number">401</span>,e.getMessage<span class="token punctuation">(</span><span class="token punctuation">)</span>,null<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>//shiro抛出的异常，比如没有权限，用户登录异常
+    <span class="token punctuation">}</span>//shiro抛出的异常，比如没有权限，用户登录异常
 
     @ResponseStatus<span class="token punctuation">(</span>HttpStatus.BAD_REQUEST<span class="token punctuation">)</span>
     @ExceptionHandler<span class="token punctuation">(</span>value <span class="token operator">=</span> RuntimeException.class<span class="token punctuation">)</span>
-    public Result handler<span class="token punctuation">(</span>RuntimeException e<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-        log.error<span class="token punctuation">(</span><span class="token string">"运行时异常：----------&#123;&#125;"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public Result handler<span class="token punctuation">(</span>RuntimeException e<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        log.error<span class="token punctuation">(</span><span class="token string">"运行时异常：----------{}"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token builtin class-name">return</span> Result.fail<span class="token punctuation">(</span>e.getMessage<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>//捕捉其他异常
+    <span class="token punctuation">}</span>//捕捉其他异常
 
     @ResponseStatus<span class="token punctuation">(</span>HttpStatus.BAD_REQUEST<span class="token punctuation">)</span>
     @ExceptionHandler<span class="token punctuation">(</span>value <span class="token operator">=</span> IllegalArgumentException.class<span class="token punctuation">)</span>
-    public Result handler<span class="token punctuation">(</span>IllegalArgumentException e<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
-        log.error<span class="token punctuation">(</span><span class="token string">"Assert异常：----------------&#123;&#125;"</span>, e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public Result handler<span class="token punctuation">(</span>IllegalArgumentException e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        log.error<span class="token punctuation">(</span><span class="token string">"Assert异常：----------------{}"</span>, e<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token builtin class-name">return</span> Result.fail<span class="token punctuation">(</span>e.getMessage<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>//处理Assert的异常
+    <span class="token punctuation">}</span>//处理Assert的异常
 
 
     @ResponseStatus<span class="token punctuation">(</span>HttpStatus.BAD_REQUEST<span class="token punctuation">)</span>
     @ExceptionHandler<span class="token punctuation">(</span>value <span class="token operator">=</span> MethodArgumentNotValidException.class<span class="token punctuation">)</span>
-    public Result handler<span class="token punctuation">(</span>MethodArgumentNotValidException e<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
-        log.error<span class="token punctuation">(</span><span class="token string">"实体校验异常：----------&#123;&#125;"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    public Result handler<span class="token punctuation">(</span>MethodArgumentNotValidException e<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        log.error<span class="token punctuation">(</span><span class="token string">"实体校验异常：----------{}"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         BindingResult bindingResult <span class="token operator">=</span> e.getBindingResult<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         ObjectError objectError <span class="token operator">=</span> bindingResult.getAllErrors<span class="token punctuation">(</span><span class="token punctuation">)</span>.stream<span class="token punctuation">(</span><span class="token punctuation">)</span>.findFirst<span class="token punctuation">(</span><span class="token punctuation">)</span>.get<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token builtin class-name">return</span> Result.fail<span class="token punctuation">(</span>objectError.getDefaultMessage<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>//处理实体校验的异常
+    <span class="token punctuation">}</span>//处理实体校验的异常
 
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
                 

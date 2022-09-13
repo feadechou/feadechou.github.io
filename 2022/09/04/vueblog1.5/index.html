@@ -50,7 +50,9 @@
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 6.2.0"></head>
+<meta name="generator" content="Hexo 6.2.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
 
 
 <body>
@@ -314,7 +316,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    196
+                    189
                 </div>
                 
 
@@ -337,7 +339,7 @@
                 <p>登录的逻辑其实很简答，只需要接受账号密码，然后把用户的id生成jwt，返回给前段，为了后续的jwt的延期，所以我们把jwt放在header上</p>
 <p>· 包名.controller.AccountController</p>
 <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">@RestController
-public class AccountController <span class="token punctuation">&#123;</span>
+public class AccountController <span class="token punctuation">{</span>
 
     @Autowired
     UserService userService<span class="token punctuation">;</span>
@@ -346,14 +348,14 @@ public class AccountController <span class="token punctuation">&#123;</span>
     JwtUtils jwtUtils<span class="token punctuation">;</span>
 
     @PostMapping<span class="token punctuation">(</span><span class="token string">"/login"</span><span class="token punctuation">)</span>
-    public Result login<span class="token punctuation">(</span>@Validated @RequestBody LoginDto loginDto, HttpServletResponse response<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    public Result login<span class="token punctuation">(</span>@Validated @RequestBody LoginDto loginDto, HttpServletResponse response<span class="token punctuation">)</span><span class="token punctuation">{</span>
 
-        User user <span class="token operator">=</span> userService.getOne<span class="token punctuation">(</span>new QueryWrapper<span class="token operator">&lt;</span>User<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span>.eq<span class="token punctuation">(</span><span class="token string">"username"</span>,loginDto.getUsername<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        User user <span class="token operator">=</span> userService.getOne<span class="token punctuation">(</span>new QueryWrapper<span class="token operator">&lt;</span>User<span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span>.eq<span class="token punctuation">(</span><span class="token string">"username"</span>,loginDto.getUsername<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         Assert.notNull<span class="token punctuation">(</span>user,<span class="token string">"用户不存在"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>//断言拦截
 
-        if<span class="token punctuation">(</span><span class="token operator">!</span>user.getPassword<span class="token punctuation">(</span><span class="token punctuation">)</span>.equals<span class="token punctuation">(</span>SecureUtil.md5<span class="token punctuation">(</span>loginDto.getPassword<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">))</span><span class="token punctuation">&#123;</span>
+        if<span class="token punctuation">(</span><span class="token operator">!</span>user.getPassword<span class="token punctuation">(</span><span class="token punctuation">)</span>.equals<span class="token punctuation">(</span>SecureUtil.md5<span class="token punctuation">(</span>loginDto.getPassword<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">))</span><span class="token punctuation">{</span>
             <span class="token builtin class-name">return</span> Result.fail<span class="token punctuation">(</span><span class="token string">"密码不正确"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">}</span>
 
         String jwt <span class="token operator">=</span> jwtUtils.generateToken<span class="token punctuation">(</span>user.getId<span class="token punctuation">(</span><span class="token punctuation">))</span><span class="token punctuation">;</span>
         response.setHeader<span class="token punctuation">(</span><span class="token string">"Authorization"</span>,jwt<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -366,17 +368,17 @@ public class AccountController <span class="token punctuation">&#123;</span>
                 .put<span class="token punctuation">(</span><span class="token string">"email"</span>, user.getEmail<span class="token punctuation">(</span><span class="token punctuation">))</span>
                 .map<span class="token punctuation">(</span><span class="token punctuation">)</span>
         <span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">}</span>
 
 
     @RequiresAuthentication
     @PostMapping<span class="token punctuation">(</span><span class="token string">"/logout"</span><span class="token punctuation">)</span>
-    public Result <span class="token function-name function">logout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    public Result <span class="token function-name function">logout</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
         SecurityUtils.getSubject<span class="token punctuation">(</span><span class="token punctuation">)</span>.logout<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token builtin class-name">return</span> Result.succ<span class="token punctuation">(</span>null<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">}</span>
 
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>记得接口测试，用户名是Markerhub（数据库有），密码是6个1</p>
 
