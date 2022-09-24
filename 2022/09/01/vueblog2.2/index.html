@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="vueblog1.1, MyBlog">
-    <meta name="description" content="统一结果封装">
+    <meta name="keywords" content="vueblog2.2, MyBlog">
+    <meta name="description" content="vueblog前端登陆页面">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -17,7 +17,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>vueblog1.1 | MyBlog</title>
+    <title>vueblog2.2 | MyBlog</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     
 
@@ -252,12 +252,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/5.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/7.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">vueblog1.1</h1>
+                    <h1 class="description center-align post-title">vueblog2.2</h1>
                 </div>
             </div>
         </div>
@@ -279,9 +279,13 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/vue/">
+                                <span class="chip bg-color">vue</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -302,21 +306,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-09-03
+                    2022-09-01
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2022-09-03
+                    2022-09-24
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    167
+                    1.5k
                 </div>
                 
 
@@ -336,46 +340,260 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>· 包名.common.lang.Result<br>主要是为了统一下返回的信息格式</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">@Data
-public class Result implements Serializable <span class="token punctuation">{</span>
+                <p>参考链接：<a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903823966732302">https://juejin.cn/post/6844903823966732302</a></p>
+<p>事先说明，其实人家的文档也算很清楚，自己就是想拿个项目练练手，记录自己建的过程（对，就是白嫖），然后加上自己能懂的语言，如果其中有一些技术可能要自己去补一下，写博客时实在是觉得有点难以下手，不知道怎么说知识点，而且也比较散。</p>
+<p>因为自己本身接触后端比较多，所以前端没有后端那么熟练，因此出错也比较多，文章也只是根据参考链接和视频去说一下自己解决的问题和看法，不会的看一下参考链接或者百度。</p>
+<p>这个项目也算是比较旧了，没用一些比较创新的组件，可能更适合新学的吧。</p>
+<hr>
+<p>先说一下，正式的功能页面调试的时候，建议后端那写清楚server的端口号，vue启动默认是8080（我也不知道为什么，自己比较懒，也没去深究），然后必须先开后端，要不然数据没办法获取，而且建议先开后端，再开前端，这样，或许你出错少一点，高手请随意（不过高手也不会看这我写的这些破东西）</p>
+<h1 id="登陆页面"><a href="#登陆页面" class="headerlink" title="登陆页面"></a>登陆页面</h1><p>直接上代码，输入框和按钮可以去element-ui官网去找,那个图片的话可能需要自己做个图床或者直接用参考链接那个</p>
+<p>页面做了两件事，表单检验和登录按钮的点击登录事件</p>
+<p>表单校验规则查一下element-ui的组件就知道了；<br>至于登录按钮的点击登录事件，</p>
+<pre class="line-numbers language-none"><code class="language-none">this.$axios.post('/login',this.ruleForm).then(res =&gt; {
+            
+            console.log(res.headers);
+            console.log(res);
+            const jwt = res.headers['authorization'];
+            const userInfo = res.data.data;
+            console.log(userInfo);
 
-    //结果包含的几要素
-    private int code<span class="token punctuation">;</span>//是否成功，例如200、400
-    private String msg<span class="token punctuation">;</span>//结果消息
-    private Object data<span class="token punctuation">;</span>//结果数据
+            //把数据共享出去
+            _this.$store.commit("SET_TOKEN",jwt);
+            _this.$store.commit("SET_USERINFO",userInfo);
+
+            //获取
+            console.log(_this.$store.getters.getUser);
+
+            _this.$router.push("/blogs")
+          })
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>从返回的结果请求头中获取到token的信息，然后使用store提交token和用户信息的状态。完成操作之后，调整到了/blogs路由，即博客列表页面。<br>console.log主要是看有没有获取到信息，可以不写。</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;template&gt;
+  &lt;div&gt;
+    &lt;el-container&gt;      
+      &lt;el-main&gt;
+        &lt;el-header&gt;
+        &lt;img class="mlogo" src="https://cdn.staticaly.com/gh/feadechou/img-bed@main/avataaars.6ooctx7djqw0.webp" alt=""&gt;
+      &lt;/el-header&gt;
+        &lt;el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"&gt;
+          &lt;el-form-item label="用户名" prop="username"&gt;
+            &lt;el-input v-model="ruleForm.username"&gt;&lt;/el-input&gt;
+          &lt;/el-form-item&gt;
+          &lt;el-form-item label="密码" prop="password"&gt;
+            &lt;el-input type="password" v-model="ruleForm.password"&gt;&lt;/el-input&gt;
+          &lt;/el-form-item&gt;
+          &lt;el-form-item&gt;
+            &lt;el-button type="primary" @click="submitForm('ruleForm')"&gt;立即创建&lt;/el-button&gt;
+            &lt;el-button @click="resetForm('ruleForm')"&gt;重置&lt;/el-button&gt;
+          &lt;/el-form-item&gt;
+        &lt;/el-form&gt;
+      &lt;/el-main&gt;
+    &lt;/el-container&gt;
+  &lt;/div&gt;
+
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: "Login",
+  data() {
+    return {
+      ruleForm: {
+        username: "markerhub",
+        password: "111111"
+      },
+      rules: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          { min: 3, max: 15, message: "长度在 3 到 15 个字符", trigger: "blur" },
+        ],
+        password: [
+          { required: true, message: "请输入密码", trigger: "change" },
+        ],
+      },
+    };
+  },
+  methods: {
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) =&gt; {
+        if (valid) {
+          // alert("submit!");
+          const _this = this;//全局地址
+          //login:http://localhost:8081/login 后端地址
+          this.$axios.post('/login',this.ruleForm).then(res =&gt; {
+            
+            console.log(res.headers);
+            console.log(res);
+            const jwt = res.headers['authorization'];
+            const userInfo = res.data.data;
+            console.log(userInfo);
+
+            //把数据共享出去
+            _this.$store.commit("SET_TOKEN",jwt);
+            _this.$store.commit("SET_USERINFO",userInfo);
+
+            //获取
+            console.log(_this.$store.getters.getUser);
+
+            _this.$router.push("/blogs")
+          })
+
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+  },
+};
+&lt;/script&gt;
+&lt;style scope&gt;
+.el-header,
+.el-footer {
+  background-color: #b3c0d1;
+  color: #333;
+  text-align: center;
+  line-height: 60px;
+}
+
+.el-aside {
+  background-color: #d3dce6;
+  color: #333;
+  text-align: center;
+  line-height: 200px;
+}
+
+.el-main {
+  background-color: #e9eef3;
+  color: #333;
+  text-align: center;
+  line-height: 160px;
+}
+
+body&gt;.el-container {
+  margin-bottom: 40px;
+}
+
+.el-container:nth-child(5) .el-aside,
+.el-container:nth-child(6) .el-aside {
+  line-height: 260px;
+}
+
+.el-container:nth-child(7) .el-aside {
+  line-height: 320px;
+}
+
+.demo-ruleForm {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.mlogo {
+    height: 60%;
+    margin-top: 10px;
+  }
+&lt;/style&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
-    //操作成功类型
-    public static Result succ<span class="token punctuation">(</span>Object data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-       <span class="token builtin class-name">return</span> commo<span class="token punctuation">(</span><span class="token number">200</span>,<span class="token string">"操作成功"</span>,data<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+<h1 id="token的状态同步"><a href="#token的状态同步" class="headerlink" title="token的状态同步"></a>token的状态同步</h1><p>· store/index.js</p>
+<pre class="line-numbers language-none"><code class="language-none">import Vue from 'vue'
+import Vuex from 'vuex'
 
-    //操作失败类型
-    public static Result fail<span class="token punctuation">(</span>String msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token builtin class-name">return</span> commo<span class="token punctuation">(</span><span class="token number">400</span>,msg, null<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+Vue.use(Vuex)
+//数据状态管理,数据互通
+export default new Vuex.Store({
+  state: {
+    token: '',
+    userInfo: JSON.parse(sessionStorage.getItem("userInfo"))
+  },
+  getters: {
+    //getter
+    getUser: state =&gt; {
+      return state.userInfo;
+    }
+  },
+  mutations: {
+    //setter
+    SET_TOKEN: (state,token) =&gt; {
+      state.token = token
+      localStorage.setItem("token",token)
+    },
+    SET_USERINFO: (state,userInfo) =&gt; {
+      state.userInfo = userInfo
+      sessionStorage.setItem("userInfo",JSON.stringify(userInfo))
+    },
 
-    //操作失败类型
-    public static Result fail<span class="token punctuation">(</span>String msg,Object data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token builtin class-name">return</span> commo<span class="token punctuation">(</span><span class="token number">400</span>, msg, data<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
+    REMOVE_INFO: (state) =&gt; {
+      state.token = ''
+      state.userInfo = {}
+      localStorage.removeItem("token")
+      sessionStorage.removeItem("userInfo")
+      // localStorage.setItem("token",'')
+      // sessionStorage.setItem("userInfo",JSON.stringify(''))
+    }
+  },
+  actions: {
+  },
+  modules: {
+  }
+})<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>存储token，我们用的是localStorage，存储用户信息，我们用的是sessionStorage。毕竟用户信息我们不需要长久保存，保存了token信息，我们随时都可以初始化用户信息。</p>
+<h1 id="定义全局axios拦截器"><a href="#定义全局axios拦截器" class="headerlink" title="定义全局axios拦截器"></a>定义全局axios拦截器</h1><p>对axios做了个后置拦截器，就是返回数据时候，如果结果的code或者status不正常，那么对应弹窗提示<br>· src/axios.js</p>
+<pre class="line-numbers language-none"><code class="language-none">import axios from 'axios'
+import Element from 'element-ui'
+import router from './router'
+import store from './store'
+//全局axios拦截
 
-    //操作失败类型
-    public static Result fail<span class="token punctuation">(</span>int code,String msg,Object data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token builtin class-name">return</span> commo<span class="token punctuation">(</span>code, msg, data<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
 
-    //操作类型通用
-    public static Result commo<span class="token punctuation">(</span>int code,String mess,Object data<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        Result <span class="token assign-left variable">m</span><span class="token operator">=</span>new Result<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        m.setCode<span class="token punctuation">(</span>code<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        m.setMsg<span class="token punctuation">(</span>mess<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        m.setData<span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token builtin class-name">return</span> m<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+axios.defaults.baseURL = "http://localhost:8080"//前缀,那些'/login'前补的东西
 
+//前置拦截，发起请求做的通知
+axios.interceptors.request.use(config =&gt; {
+
+    return config
+})
+
+axios.interceptors.response.use(response =&gt; {
+    let res = response.data;
+
+    console.log("------------");
+    console.log(res);
+    console.log("------------");
+
+    if (res.code == 200) {
+        return response;
+    } else {
+        Element.Notification.error({
+            title: '错误',
+            message: '这是一条错误的提示消息',
+            duration: 3 * 1000
+        });
+
+        return Promise.reject(response.data.msg);
+    }
+    //401是没有权限，后端异常可以查到
+},
+    error =&gt; {
+        console.log(error)
+        if(error.response.data){
+            error.message = error.response.data.msg
+        }
+
+        if(error.response.status === 401){ //为什么是401，可以在后端那异常源码去查
+            store.commit("REMOVE_INFO")
+            router.push("/login")
+        }
+
+        Element.Message.error(error.message, {duration: 3 * 1000})
+        return Promise.reject(error)
+    }
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>后端因为返回的实体是Result，succ时候code为200，fail时候返回的是400，所以可以根据这里判断结果是否是正常的。另外权限不足时候可以通过请求结果的状态码来判断结果是否正常。这里都做了简单的处理。<br>前置拦截。因为项目太小，参考链接又没写，所以过！</p>
+<p>main.js中导入axios.js，之后会有一个总的写好的main.js的</p>
 
                 
             </div>
@@ -402,7 +620,7 @@ public class Result implements Serializable <span class="token punctuation">{</s
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://feadechou.github.io/2022/09/03/vueblog1.1/">https://feadechou.github.io/2022/09/03/vueblog1.1/</a>
+                    <a href="https://feadechou.github.io/2022/09/01/vueblog2.2/">https://feadechou.github.io/2022/09/01/vueblog2.2/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -439,7 +657,11 @@ public class Result implements Serializable <span class="token punctuation">{</s
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/vue/">
+                                    <span class="chip bg-color">vue</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -487,24 +709,24 @@ public class Result implements Serializable <span class="token punctuation">{</s
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/09/03/vueblog1.2/">
+                <a href="/2022/09/01/vueblog2.1/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/6.png" class="responsive-img" alt="vueblog1.2">
+                        <img src="/medias/featureimages/6.png" class="responsive-img" alt="vueblog2.1">
                         
-                        <span class="card-title">vueblog1.2</span>
+                        <span class="card-title">vueblog2.1</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            整合shiro+jwt
+                            vueblog前端页面路由
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-09-03
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-09-01
                         </span>
                         <span class="publish-author">
                             
@@ -519,6 +741,14 @@ public class Result implements Serializable <span class="token punctuation">{</s
                     </div>
                 </div>
                 
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/vue/">
+                        <span class="chip bg-color">vue</span>
+                    </a>
+                    
+                </div>
+                
             </div>
         </div>
         
@@ -528,19 +758,19 @@ public class Result implements Serializable <span class="token punctuation">{</s
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/09/01/vueblog1.0/">
+                <a href="/2022/09/01/vueblog2.3/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/5.png" class="responsive-img" alt="vueblog1.1">
+                        <img src="/medias/featureimages/7.png" class="responsive-img" alt="vueblog2.2">
                         
-                        <span class="card-title">vueblog1.1</span>
+                        <span class="card-title">vueblog2.2</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            vueblog项目环境搭建
+                            vueblog前端博客列表
                         
                     </div>
                     <div class="publish-info">
@@ -562,8 +792,8 @@ public class Result implements Serializable <span class="token punctuation">{</s
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/mybatis-plus/">
-                        <span class="chip bg-color">mybatis plus</span>
+                    <a href="/tags/vue/">
+                        <span class="chip bg-color">vue</span>
                     </a>
                     
                 </div>

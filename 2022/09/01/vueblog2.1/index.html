@@ -4,8 +4,8 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="vueblog1.1, MyBlog">
-    <meta name="description" content="统一结果封装">
+    <meta name="keywords" content="vueblog2.1, MyBlog">
+    <meta name="description" content="vueblog前端页面路由">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -17,7 +17,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>vueblog1.1 | MyBlog</title>
+    <title>vueblog2.1 | MyBlog</title>
     <link rel="icon" type="image/png" href="/favicon.png">
     
 
@@ -252,12 +252,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/5.png')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/6.png')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">vueblog1.1</h1>
+                    <h1 class="description center-align post-title">vueblog2.1</h1>
                 </div>
             </div>
         </div>
@@ -279,9 +279,13 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/vue/">
+                                <span class="chip bg-color">vue</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -302,21 +306,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-09-03
+                    2022-09-01
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2022-09-03
+                    2022-09-24
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    167
+                    373
                 </div>
                 
 
@@ -336,45 +340,76 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>· 包名.common.lang.Result<br>主要是为了统一下返回的信息格式</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">@Data
-public class Result implements Serializable <span class="token punctuation">{</span>
+                <p>参考链接：<a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903823966732302">https://juejin.cn/post/6844903823966732302</a></p>
+<p>事先说明，其实人家的文档也算很清楚，自己就是想拿个项目练练手，记录自己建的过程（对，就是白嫖），然后加上自己能懂的语言，如果其中有一些技术可能要自己去补一下，写博客时实在是觉得有点难以下手，不知道怎么说知识点，而且也比较散。</p>
+<p>因为自己本身接触后端比较多，所以前端没有后端那么熟练，因此出错也比较多，文章也只是根据参考链接和视频去说一下自己解决的问题和看法，不会的看一下参考链接或者百度。</p>
+<p>这个项目也算是比较旧了，没用一些比较创新的组件，可能更适合新学的吧。</p>
+<hr>
+<h1 id="创建页面"><a href="#创建页面" class="headerlink" title="创建页面"></a>创建页面</h1><p>在views文件夹下定义几个页面：</p>
+<p>BlogDetail.vue（博客详情页）<br>BlogEdit.vue（编辑博客）<br>Blogs.vue（博客列表）<br>Login.vue（登录页面）</p>
+<p>然后路由中心配置：</p>
+<p>router\index.js</p>
+<pre class="line-numbers language-none"><code class="language-none">import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Login from '../views/Login.vue'
+import Blogs from '@/views/Blogs'
+import BlogEdit from '../views/BlogEdit.vue'
+import BlogDetail from '../views/BlogDetail.vue'
 
-    //结果包含的几要素
-    private int code<span class="token punctuation">;</span>//是否成功，例如200、400
-    private String msg<span class="token punctuation">;</span>//结果消息
-    private Object data<span class="token punctuation">;</span>//结果数据
+
+Vue.use(VueRouter)
+
+const routes = [
+  {
+    path: '/',
+    name: 'Index',
+    redirect: {name: 'Blogs'}
+  },
+  {
+    path: '/blogs',
+    name: 'Blogs',
+    //懒加载
+    // component: () =&gt; import('../views/Blogs.vue')
+    component: Blogs
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
+  },
+  {
+    path: '/blog/add',
+    name: 'BlogAdd',
+    component: BlogEdit,
+    meta: {
+      requireAuth: true
+    }
+  },
+  {
+    path: '/blog/:blogId',
+    name: 'BlogDetail',
+    component: BlogDetail
+  },
+  {
+    path: '/blog/:blogId/edit',
+    name: 'BlogEdit',
+    component: BlogEdit,
+    meta: {
+      requireAuth: true
+    }
+  }
+]
+
+const router = new VueRouter({
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes
+})
+
+export default router<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
-    //操作成功类型
-    public static Result succ<span class="token punctuation">(</span>Object data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-       <span class="token builtin class-name">return</span> commo<span class="token punctuation">(</span><span class="token number">200</span>,<span class="token string">"操作成功"</span>,data<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
 
-    //操作失败类型
-    public static Result fail<span class="token punctuation">(</span>String msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token builtin class-name">return</span> commo<span class="token punctuation">(</span><span class="token number">400</span>,msg, null<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    //操作失败类型
-    public static Result fail<span class="token punctuation">(</span>String msg,Object data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token builtin class-name">return</span> commo<span class="token punctuation">(</span><span class="token number">400</span>, msg, data<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    //操作失败类型
-    public static Result fail<span class="token punctuation">(</span>int code,String msg,Object data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token builtin class-name">return</span> commo<span class="token punctuation">(</span>code, msg, data<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    //操作类型通用
-    public static Result commo<span class="token punctuation">(</span>int code,String mess,Object data<span class="token punctuation">)</span><span class="token punctuation">{</span>
-        Result <span class="token assign-left variable">m</span><span class="token operator">=</span>new Result<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        m.setCode<span class="token punctuation">(</span>code<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        m.setMsg<span class="token punctuation">(</span>mess<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        m.setData<span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token builtin class-name">return</span> m<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
                 
@@ -402,7 +437,7 @@ public class Result implements Serializable <span class="token punctuation">{</s
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://feadechou.github.io/2022/09/03/vueblog1.1/">https://feadechou.github.io/2022/09/03/vueblog1.1/</a>
+                    <a href="https://feadechou.github.io/2022/09/01/vueblog2.1/">https://feadechou.github.io/2022/09/01/vueblog2.1/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -439,7 +474,11 @@ public class Result implements Serializable <span class="token punctuation">{</s
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/vue/">
+                                    <span class="chip bg-color">vue</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -487,24 +526,24 @@ public class Result implements Serializable <span class="token punctuation">{</s
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/09/03/vueblog1.2/">
+                <a href="/2022/09/01/vueblog2.0/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/6.png" class="responsive-img" alt="vueblog1.2">
+                        <img src="/medias/featureimages/5.png" class="responsive-img" alt="vueblog2.0">
                         
-                        <span class="card-title">vueblog1.2</span>
+                        <span class="card-title">vueblog2.0</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            整合shiro+jwt
+                            vueblog前端搭建
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-09-03
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-09-01
                         </span>
                         <span class="publish-author">
                             
@@ -519,6 +558,14 @@ public class Result implements Serializable <span class="token punctuation">{</s
                     </div>
                 </div>
                 
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/vue/">
+                        <span class="chip bg-color">vue</span>
+                    </a>
+                    
+                </div>
+                
             </div>
         </div>
         
@@ -528,19 +575,19 @@ public class Result implements Serializable <span class="token punctuation">{</s
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/09/01/vueblog1.0/">
+                <a href="/2022/09/01/vueblog2.2/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/5.png" class="responsive-img" alt="vueblog1.1">
+                        <img src="/medias/featureimages/7.png" class="responsive-img" alt="vueblog2.2">
                         
-                        <span class="card-title">vueblog1.1</span>
+                        <span class="card-title">vueblog2.2</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            vueblog项目环境搭建
+                            vueblog前端登陆页面
                         
                     </div>
                     <div class="publish-info">
@@ -562,8 +609,8 @@ public class Result implements Serializable <span class="token punctuation">{</s
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/mybatis-plus/">
-                        <span class="chip bg-color">mybatis plus</span>
+                    <a href="/tags/vue/">
+                        <span class="chip bg-color">vue</span>
                     </a>
                     
                 </div>
